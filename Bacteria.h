@@ -1,15 +1,15 @@
 #pragma once
-#include <memory>
+
 
 class Bacteria:
 	public Cell
 {
-	long energy;
+	float energy;
 	DWORD zero;
-	int steal(int amount);
+	float steal(float amount);
 public:
-	Bacteria(Map*_map, int x, int y, int food);
-	void Feed(int food_count);
+	Bacteria(Map*_map, unsigned int x, unsigned int y, float food);
+	void Feed(float food_count);
 	bool Update();
 	bool isAlive();
 	int  getEnergy();

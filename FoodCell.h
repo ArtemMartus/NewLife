@@ -2,13 +2,14 @@
 class FoodCell :
 	public Cell
 {
-	int food_amount;
-	int old_food;
+	float food_amount;
+	float old_food;
 public:
-	FoodCell(Map*_map, int x, int y, int food = 1);
+	FoodCell(Map*_map, unsigned int x, unsigned int y, float food = 1);
 	bool Update();
 	int getFood();
-	int steal(int amount);
+	float steal(float amount);
+	int ratio();
 	std::string getInfo();
 	~FoodCell();
 };

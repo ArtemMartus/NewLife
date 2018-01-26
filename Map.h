@@ -1,30 +1,29 @@
 #pragma once
-#include <list>
-#ifndef MAP_KEY_
-#define MAP_KEY_ 0xfe2aefbc
-#endif
+
 class Map 
 {
-	std::list<Cell*> cells;
+	Block cellBlock;
 	int foodLeft;
 	int bacterias;
 	int energy;
+	int cellsAlive;
 
-	int w;
-	int h;
+	unsigned int w;
+	unsigned int h;
 
-	Cell* find(int x, int y);
+	Cell* find(unsigned int x, unsigned int y);
 public:
-	Map(int width, int height);
+	Map(unsigned int width, unsigned int height);
 	~Map();
 
 	Cell* SettleBacteria(Cell* old, int addition_food = 0);
-	Cell* SettleBacteria(int x, int y, int addition_food = 0);
+	Cell* SettleBacteria(unsigned int x, unsigned int y, int addition_food = 0);
 	void Update();
 	int FoodLeft();
 	int BacteriaAlive();
 	int EnergyLeft();
-	Cell* FindFood(int x, int y);
+	int CellsAlive();
+	Cell* FindFood(unsigned int x, unsigned int y);
 
 	DWORD mapKey;
 };

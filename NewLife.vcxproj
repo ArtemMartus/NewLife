@@ -84,6 +84,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Container\Block.cpp" />
     <ClCompile Include="Impl\Render_Util.cpp" />
     <ClCompile Include="Logic\Bacteria.cpp" />
     <ClCompile Include="Logic\FoodCell.cpp" />
@@ -92,6 +93,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="Render_Util.h" />
     <ClInclude Include="Bacteria.h" />
     <ClInclude Include="FoodCell.h" />

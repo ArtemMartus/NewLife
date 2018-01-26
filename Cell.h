@@ -14,22 +14,26 @@ union _col
 class Cell
 {
 protected:
-	int x, y;
+	unsigned int x, y;
 	RECT quad;
 	Map* map;
 	_col color;
+	DWORD vali;
 public:
+
 	virtual bool Update();
 	virtual std::string getInfo();
 	virtual int getFood();
 	virtual bool isAlive();
 	virtual int  getEnergy();
 
-	bool getCell(int x, int y);
-	int getX();
-	int getY();
+	bool getCell(unsigned int x, unsigned int y);
+	unsigned int getX();
+	unsigned int getY();
 
-	Cell(Map*map,int x,int y);
+	bool isValid();
+
+	Cell(Map*map, unsigned int x, unsigned int y);
 	virtual ~Cell();
 };
 

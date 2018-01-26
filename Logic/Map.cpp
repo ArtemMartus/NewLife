@@ -1,70 +1,76 @@
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <windows.h>
-#include "../Cell.h"
-#include "../Bacteria.h"
-#include "../FoodCell.h"
+#include "../Header.h"
 #include "../Map.h"
-#include "../Render_Util.h"
 
 
 
-
-Cell* Map::find(int x, int y)
+Cell* Map::find(unsigned int x, unsigned int y)
 {
-	for each (auto cel in cells)
+	Cell * c = 0;
+	if (x >= 0 && x < 0xff && y >= 0 && y < 0xff)
 	{
-		if (cel->getX() == x&&cel->getY() == y)
-			return cel;
+		c = cellBlock.getCell(block_id(x, y)); 
+		try{
+			if (c&&c->isValid())
+				return c;
+		}
+		catch (...){
+			return 0;
+		}
 	}
 	return 0;
 }
 
-Map::Map(int width, int height)
+Map::Map(unsigned int width, unsigned int height)
 {
 	mapKey = MAP_KEY_;
-	w = width;
-	h = height;
+ 	w = width;
+ 	h = height;
 
-	for (int y = 0; y < h; y++)
-		for (int x = 0; x < w; x++){
-			cells.push_back(new FoodCell(this, x, y, abs(rand() % (255))));
-		}
+	block_id id;
+	for (id.id = 0; id.id < MAPSIZE; id.id++){
+		unsigned __int16 food = 0;
+	food_sp:
+		food = abs(rand() % (0xff));
+		if (food < 40)
+			goto food_sp;
+
+		cellBlock.setCell(id, new FoodCell(this, id.x, id.y, food));
+	}
 }
 
 Map::~Map()
 {
 	mapKey = (DWORD)-1;
-	for each(auto cel in cells)
-		delete cel;
 }
 
-Cell* Map::SettleBacteria(int x, int y, int addition_food)
+Cell* Map::SettleBacteria(unsigned int x, unsigned int y, int addition_food)
 {
-	for each(auto cel in cells){
-		if (cel->getCell(x, y)){
+	Cell* b = 0;
 
-			auto b = new Bacteria(this, cel->getX(), cel->getY(), cel->getFood() + addition_food);
+	Cell* cel = cellBlock.find(x, y);
+	if (cel){
 
-			cells.push_front(b);
-			cells.remove(cel);
-			//std::cout << "Welcome new bacteria " << b->getInfo() << std::endl;
-			return b;
-		}
+		auto b = new Bacteria(this, cel->getX(), cel->getY(), cel->getFood() + addition_food);
+		cellBlock.setCell(block_id(b->getX(), b->getY()), b);
+		delete cel;
+		//std::cout << "Welcome new bacteria " << b->getInfo() << std::endl;
+		return b;
 	}
 	return 0;
 }
 
 Cell* Map::SettleBacteria(Cell* old, int addition_food /*= 0*/)
 {
-	int _x = old->getX();
-	int _y = old->getY();
+	auto _x = old->getX();
+	auto _y = old->getY();
+
 	
 	auto b = new Bacteria(this, _x, _y, old->getFood() + addition_food);
+	if (!b || !b->isValid())
+		return 0;
 
-	cells.push_front(b);
-	cells.remove(old);
+	delete cellBlock.getCell(block_id(_x, _y));
+	cellBlock.setCell(block_id(_x, _y), b);
 	//std::cout << "Welcome new bacteria " << b->getInfo() << std::endl;
 	return b;
 }
@@ -74,11 +80,17 @@ void Map::Update()
 	foodLeft = 0;
 	bacterias = 0;
 	energy = 0;
+	cellsAlive = 0;
 
 	RenderUtil::StartScene();
-	for each(auto cel in cells){
+	for (int i = 0; i < MAPSIZE; ++i){
 
-		cel->Update();
+		Cell* cel = cellBlock.getCell(block_id(i));
+		if (!cel->Update())
+		{
+			continue;
+		}
+		cellsAlive++;
 
 		if (cel->isAlive())
 			++bacterias;
@@ -104,10 +116,15 @@ int Map::EnergyLeft()
 	return energy;
 }
 
-Cell* Map::FindFood(int x, int y)
+int Map::CellsAlive()
 {
-	x = x % w;
-	y = y % h;
+	return cellsAlive;
+}
+
+Cell* Map::FindFood(unsigned int x, unsigned int y)
+{
+ 	x = x % w;
+ 	y = y % h;
 	auto r = find(x, y);
 	if (r&&r->getFood() > 0)
 		return r;

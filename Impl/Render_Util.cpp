@@ -1,15 +1,15 @@
-#include <windows.h>
-#include <iostream>
-#include <GL/freeglut.h>
+#include "../Header.h"
 #include "../Render_Util.h"
 
 namespace RenderUtil
 {
 	static bool initialized = false;
-	static int width;
-	static int height;
-	static int width_count;
-	static int height_count;
+	static unsigned int width;
+	static unsigned int height;
+	static unsigned int width_count;
+	static unsigned int height_count;
+	static unsigned int ratio;
+	static float tax;
 	static void(*OnMouseClick)(float posX, float posY);
 
 	void mouseClicks(int button, int state, int x, int y) {
@@ -48,6 +48,14 @@ namespace RenderUtil
 	{
 		if (!initialized)
 			return;
+
+		auto cell = RenderUtil::GetCellSize();
+
+		quad.left = quad.left*cell + cell / 10;
+		quad.right = quad.right*cell + cell - cell / 10;
+		quad.top = quad.top*cell + cell / 10;
+		quad.bottom = quad.bottom*cell + cell - cell / 10;
+
 		glBegin(GL_QUADS);
 		glColor4bv((const GLbyte*)&color);
 		glVertex2i(quad.left , quad.top );
@@ -55,6 +63,9 @@ namespace RenderUtil
 		glVertex2i(quad.right, quad.bottom);
 		glVertex2i(quad.left, quad.bottom);
 		glEnd();
+		/*glBegin(GL_POINT);
+		glVertex2i(quad.top,quad.right);
+		glEnd();*/
 	}
 
 	void EndScene()
@@ -66,7 +77,7 @@ namespace RenderUtil
 	}
 
 
-	void Init(int argc, char**argv, void(*displayFunc)(), void(*m)(float posX, float posY), int w, int h, int wcount, int hcount)
+	void Init(int argc, char**argv, void(*displayFunc)(), void(*m)(float posX, float posY), unsigned int w, unsigned int h, unsigned int wcount, unsigned int hcount,int rate,float taxs)
 	{
 		if (!initialized)
 		{
@@ -85,6 +96,12 @@ namespace RenderUtil
 			initialized = true;
 
 			std::cout << "Cellsize = " << GetCellSize() << std::endl;
+			ratio = rate;
+			if (ratio > 100)
+				ratio = 100;
+			if (ratio < 5)
+				ratio = 5;
+			tax = taxs;
 		}
 	}
 
@@ -93,13 +110,23 @@ namespace RenderUtil
 		if (!initialized)
 			return;
 		glClearColor(0.0f, 0.5f, 0.5f, 0.0f);
-		glOrtho(0, width_count*GetCellSize(),0,height_count*GetCellSize(), 0, 100);
+		gluOrtho2D(width_count*GetCellSize(),0,0,height_count*GetCellSize());
 		glutMainLoop();
 	}
 
 	int GetCellSize()
 	{
-		return ((width / width_count + 1) + (height / height_count + 1)) / 2;
+		return (((float)width / width_count + 1.0f) + ((float)height / height_count + 1.0f)) / 2.0f;
+	}
+
+	int GetRatio()
+	{
+		return ratio;
+	}
+
+	float GetTax()
+	{
+		return tax + 1.0f;
 	}
 
 }

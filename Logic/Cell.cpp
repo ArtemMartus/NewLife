@@ -1,9 +1,7 @@
-#include <string>
-#include <windows.h>
-#include <sstream>
+#include "../Header.h"
 #include "../Cell.h"
-#include "../Render_Util.h"
-#include "../Map.h"
+
+#define CELL_VALID 0xf2f4f6f8
 
 bool Cell::Update()
 {
@@ -13,7 +11,7 @@ bool Cell::Update()
 std::string Cell::getInfo()
 {
 	std::stringstream str;
-	str << "[" << x << ":" << y << "]" << quad.left << "..." << quad.right <<" | " << quad.top << "..." << quad.bottom;
+	str << "[" << x << ":" << y << "]" << quad.left << "..." << quad.right << " | " << quad.top << "..." << quad.bottom;
 	return str.str();
 }
 
@@ -32,34 +30,44 @@ int Cell::getEnergy()
 	return 0;
 }
 
-bool Cell::getCell(int x_, int y_)
+bool Cell::getCell(unsigned int x_, unsigned int y_)
 {
-	return x_ >= quad.left && x_ <= quad.right && y_ >= quad.top && y_ <= quad.bottom;
+	auto cell = RenderUtil::GetCellSize();
+
+	int _x = x_ / cell;
+	int _y = y_ / cell;
+	return x == _x && y == _y;
 }
 
-int Cell::getX()
+unsigned int Cell::getX()
 {
 	return x;
 }
 
-int Cell::getY()
+unsigned int Cell::getY()
 {
 	return y;
 }
 
-Cell::Cell(Map*_map,int x, int y)
+bool Cell::isValid()
 {
+	return vali == CELL_VALID;
+}
+
+Cell::Cell(Map*_map, unsigned int x, unsigned int y)
+{
+	vali = CELL_VALID;
+
 	map = _map;
 	this->x = x;
 	this->y = y;
-	auto cell = RenderUtil::GetCellSize();
 
-	quad.left = x*cell + cell / 10;
-	quad.right = x*cell + cell - cell / 10;
-	quad.top = y*cell + cell / 10;
-	quad.bottom = y*cell + cell - cell / 10;
+	quad.left = x;
+	quad.right = x;
+	quad.top = y;
+	quad.bottom = y;
 
-	color.r = -(0xff/2);
+	color.r = -(0xff / 2);
 	color.g = -(0xff / 2);
 	color.b = 0xff / 2;
 	color.a = 0xff / 2;
@@ -67,4 +75,5 @@ Cell::Cell(Map*_map,int x, int y)
 
 Cell::~Cell()
 {
+	vali = (DWORD)-1;
 }

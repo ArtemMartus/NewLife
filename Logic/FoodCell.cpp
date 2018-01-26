@@ -1,15 +1,9 @@
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <windows.h>
-#include "../Cell.h"
+#include "../Header.h"
 #include "../FoodCell.h"
-#include "../Render_Util.h"
-#include "../Map.h"
 
 
 
-FoodCell::FoodCell(Map*_map, int x, int y, int food) : Cell(_map,x, y)
+FoodCell::FoodCell(Map*_map, unsigned int x, unsigned int y, float food) : Cell(_map, x, y)
 {
 	food_amount = food;
 	old_food = food_amount;
@@ -35,11 +29,11 @@ int FoodCell::getFood()
 	return food_amount;
 }
 
-int FoodCell::steal(int amount)
+float FoodCell::steal(float amount)
 {
 	//std::cout << getInfo() << "\tSomeone's eating " << amount << "/" << food_amount << std::endl;
-	auto ne = food_amount - amount;
-	if (ne > 0)
+	auto ne = food_amount - amount*RenderUtil::GetTax();
+	if (ne > 0.0f)
 	{
 		food_amount = ne;
 		return amount;
@@ -47,9 +41,15 @@ int FoodCell::steal(int amount)
 	else
 	{
 		ne = food_amount;
-		food_amount = 0;
+		food_amount = 0.0f;
 		return ne;
 	}
+}
+
+int FoodCell::ratio()
+{
+	auto rate = (float)food_amount / old_food;
+	return (int)(rate * 100.0f);
 }
 
 std::string FoodCell::getInfo()
