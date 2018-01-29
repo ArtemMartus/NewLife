@@ -1,19 +1,12 @@
 #include "../Header.h"
 #include "../Cell.h"
 
-#define CELL_VALID 0xf2f4f6f8
 
 bool Cell::Update()
 {
 	return false;
 }
 
-std::string Cell::getInfo()
-{
-	std::stringstream str;
-	str << "[" << x << ":" << y << "]" << quad.left << "..." << quad.right << " | " << quad.top << "..." << quad.bottom;
-	return str.str();
-}
 
 int Cell::getFood()
 {
@@ -49,14 +42,9 @@ unsigned int Cell::getY()
 	return y;
 }
 
-bool Cell::isValid()
-{
-	return vali == CELL_VALID;
-}
 
 Cell::Cell(Map*_map, unsigned int x, unsigned int y)
 {
-	vali = CELL_VALID;
 
 	map = _map;
 	this->x = x;
@@ -75,5 +63,5 @@ Cell::Cell(Map*_map, unsigned int x, unsigned int y)
 
 Cell::~Cell()
 {
-	vali = (DWORD)-1;
+
 }

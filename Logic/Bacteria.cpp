@@ -7,7 +7,7 @@ const float energy_per_food = 1.0f;
 Bacteria::Bacteria(Map*_map, unsigned int x, unsigned int y, float food) :Cell(_map, x, y)
 {
 	energy = 0.0f;
-	zero = BACTERIA_CODE;
+	//zero = BACTERIA_CODE;
 	Feed(food);
 }
 
@@ -36,7 +36,7 @@ float Bacteria::steal(float amount)
 
 bool Bacteria::Update()
 {
-	if (!map || map->mapKey != MAP_KEY_){
+	if (!map ){
 		energy = -1;
 		return false;
 	}
@@ -89,8 +89,6 @@ bool Bacteria::Update()
 bool Bacteria::isAlive()
 {
 	bool ret = energy > 0;
-// 	if (!ret)
-// 		zero = (DWORD)-1;
 	return ret;
 }
 
@@ -99,14 +97,8 @@ int Bacteria::getEnergy()
 	return energy;
 }
 
-std::string Bacteria::getInfo()
-{
-	std::stringstream str;
-	str << "Bacteria " << x << ":" << y << " (energy left " << energy << ")";// \tOn a{ "<< Cell::getInfo()<<" }";
-	return str.str();
-}
 
 Bacteria::~Bacteria()
 {
-	zero = (DWORD)-1;
+
 }

@@ -52,12 +52,6 @@ int FoodCell::ratio()
 	return (int)(rate * 100.0f);
 }
 
-std::string FoodCell::getInfo()
-{
-	std::stringstream str;
-	str << "Food " << x << ":" << y << " (food left " << food_amount << ")";// {" << Cell::getInfo()<<"}";
-	return str.str();
-}
 
 FoodCell::~FoodCell()
 {

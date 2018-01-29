@@ -10,7 +10,7 @@ Cell* Map::find(unsigned int x, unsigned int y)
 	{
 		c = cellBlock.getCell(block_id(x, y)); 
 		try{
-			if (c&&c->isValid())
+			if (c)
 				return c;
 		}
 		catch (...){
@@ -22,7 +22,6 @@ Cell* Map::find(unsigned int x, unsigned int y)
 
 Map::Map(unsigned int width, unsigned int height)
 {
-	mapKey = MAP_KEY_;
  	w = width;
  	h = height;
 
@@ -53,7 +52,6 @@ Cell* Map::SettleBacteria(unsigned int x, unsigned int y, int addition_food)
 		auto b = new Bacteria(this, cel->getX(), cel->getY(), cel->getFood() + addition_food);
 		cellBlock.setCell(block_id(b->getX(), b->getY()), b);
 		delete cel;
-		//std::cout << "Welcome new bacteria " << b->getInfo() << std::endl;
 		return b;
 	}
 	return 0;
@@ -66,12 +64,11 @@ Cell* Map::SettleBacteria(Cell* old, int addition_food /*= 0*/)
 
 	
 	auto b = new Bacteria(this, _x, _y, old->getFood() + addition_food);
-	if (!b || !b->isValid())
+	if (!b)
 		return 0;
 
 	delete cellBlock.getCell(block_id(_x, _y));
 	cellBlock.setCell(block_id(_x, _y), b);
-	//std::cout << "Welcome new bacteria " << b->getInfo() << std::endl;
 	return b;
 }
 

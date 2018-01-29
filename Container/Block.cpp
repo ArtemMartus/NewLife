@@ -22,7 +22,7 @@ Cell* Block::find(int x, int y)
 	Cell* c = 0;
 	for (int i = 0; i < MAPSIZE; ++i){
 		c =(Cell*)block[i];
-		if (c->isValid() && c->getCell(x, y))
+		if (c && c->getCell(x, y))
 			return c;
 	}
 	return 0;

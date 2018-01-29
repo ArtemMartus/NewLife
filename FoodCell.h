@@ -10,7 +10,6 @@ public:
 	int getFood();
 	float steal(float amount);
 	int ratio();
-	std::string getInfo();
 	~FoodCell();
 };
 

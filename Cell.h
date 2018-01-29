@@ -18,11 +18,10 @@ protected:
 	RECT quad;
 	Map* map;
 	_col color;
-	DWORD vali;
+
 public:
 
 	virtual bool Update();
-	virtual std::string getInfo();
 	virtual int getFood();
 	virtual bool isAlive();
 	virtual int  getEnergy();
@@ -30,8 +29,6 @@ public:
 	bool getCell(unsigned int x, unsigned int y);
 	unsigned int getX();
 	unsigned int getY();
-
-	bool isValid();
 
 	Cell(Map*map, unsigned int x, unsigned int y);
 	virtual ~Cell();

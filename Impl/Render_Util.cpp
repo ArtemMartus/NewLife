@@ -31,7 +31,7 @@ namespace RenderUtil
 				GLdouble posX, posY, posZ=0.0f;              // Hold The Final Values
 				gluUnProject(winX, winY, winZ, modelview, projection, viewport, &posX, &posY, &posZ);
 
-				RenderUtil::OnMouseClick(posX, posY);
+				RenderUtil::OnMouseClick((float)posX, (float)posY);
 			}
 		}
 	}
